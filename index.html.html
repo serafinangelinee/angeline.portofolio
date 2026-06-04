@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #000000;
+  --white: #f0ece6;
+  --accent: #c9a882;
+  --gray: #555;
+  --gray-light: #888;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -200%;
+  width: 400%; height: 400%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 9000;
+  animation: grain 0.5s steps(2) infinite;
+}
+@keyframes grain {
+  0%,100% { transform: translate(0,0); }
+  25% { transform: translate(-2%,-3%); }
+  50% { transform: translate(3%,2%); }
+  75% { transform: translate(-1%,3%); }
+}
+
+/* Cursor */
+.cursor {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s;
+}
+.cursor-ring {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(201,168,130,0.5);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: all 0.08s linear;
+}
+
+/* Nav */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 28px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.15em;
+  color: var(--white);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-logo::before {
+  content: '✦';
+  font-size: 12px;
+  color: var(--accent);
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.nav-right a {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.nav-right a:hover { color: var(--accent); }
+.nav-bracket {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--gray-light);
+  border: 1px solid var(--gray);
+  padding: 6px 14px;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.nav-bracket:hover {
+  color: var(--bg);
+  background: var(--white);
+  border-color: var(--white);
+}
+
+/* Hero */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 120px 40px 80px;
+  position: relative;
+}
+
+/* Spotlight glow */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(201,168,130,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-nav-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-main-link {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(80px, 14vw, 180px);
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+  color: var(--white);
+  text-decoration: none;
+  position: relative;
+  display: block;
+  transition: color 0.3s;
+}
+.hero-main-link:hover { color: var(--accent); }
+
+.hero-divider-row {
+  width: 100%;
+  overflow: hidden;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 0;
+  margin: 4px 0;
+  position: relative;
+}
+.marquee-track {
+  display: flex;
+  gap: 0;
+  animation: marquee 18s linear infinite;
+  white-space: nowrap;
+}
+.marquee-item {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+  padding: 0 32px;
+  flex-shrink: 0;
+}
+.marquee-item span { color: var(--accent); margin-right: 8px; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.hero-sub-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.hero-sub-link {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 8vw, 100px);
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  color: rgba(240,236,230,0.35);
+  text-decoration: none;
+  display: block;
+  transition: color 0.3s;
+}
+.hero-sub-link:hover { color: var(--white); }
+
+.hero-socials {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 40px;
+  z-index: 2;
+}
+.hero-socials a {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+  text-decoration: none;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hero-socials a::after { content: '↗'; font-size: 10px; }
+.hero-socials a:hover { color: var(--accent); }
+
+/* Sections */
+section {
+  padding: 100px 40px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 60px;
+}
+.section-label span { color: var(--gray); margin-right: 12px; }
+
+/* About */
+.about-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(40px, 6vw, 80px);
+  line-height: 1.0;
+  letter-spacing: 0.02em;
+  max-width: 900px;
+}
+.about-text .accent { color: var(--accent); }
+.about-sub {
+  margin-top: 48px;
+  max-width: 500px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--gray-light);
+  margin-left: auto;
+}
+
+/* Projects */
+.projects-list { display: flex; flex-direction: column; }
+
+.project-row {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: 32px;
+  align-items: start;
+  padding: 40px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+  transition: padding-left 0.4s ease;
+}
+.project-row:first-child { border-top: 1px solid rgba(255,255,255,0.06); }
+.project-row:hover { padding-left: 16px; }
+
+.proj-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: var(--gray);
+  padding-top: 6px;
+}
+
+.proj-body {}
+.proj-cat {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.proj-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 5vw, 64px);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  margin-bottom: 16px;
+  transition: color 0.3s;
+}
+.project-row:hover .proj-title { color: var(--accent); }
+.proj-desc {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--gray-light);
+  max-width: 600px;
+}
+
+.proj-tags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  padding-top: 6px;
+}
+.proj-tag {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 5px 12px;
+  transition: all 0.3s;
+}
+.project-row:hover .proj-tag {
+  border-color: rgba(201,168,130,0.3);
+  color: var(--accent);
+}
+
+/* Skills grid */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.06);
+  margin-top: 0;
+}
+.skill-cell {
+  background: var(--bg);
+  padding: 32px 28px;
+  transition: background 0.3s;
+}
+.skill-cell:hover { background: #050505; }
+.skill-cell-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--gray);
+  margin-bottom: 16px;
+}
+.skill-cell-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+.skill-cell-desc {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--gray-light);
+}
+
+/* Contact */
+.contact-wrap {
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.contact-bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(100px, 20vw, 260px);
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.02);
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 0;
+}
+.contact-inner { position: relative; z-index: 1; }
+.contact-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(60px, 10vw, 130px);
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  margin-bottom: 40px;
+}
+.contact-title .accent { color: var(--accent); }
+.contact-email {
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  color: var(--gray-light);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 56px;
+  transition: color 0.3s;
+  border-bottom: 1px solid transparent;
+}
+.contact-email:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.contact-links {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+}
+.contact-links a {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-light);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+.contact-links a::after { content: '↗'; }
+.contact-links a:hover { color: var(--accent); }
+
+/* Footer */
+.footer {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 28px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+}
+.footer span {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--gray);
+}
+
+/* Reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+
+@media (max-width: 768px) {
+  nav { padding: 24px 20px; }
+  .nav-right a { display: none; }
+  section { padding: 80px 20px; }
+  .skills-grid { grid-template-columns: 1fr 1fr; }
+  .project-row { grid-template-columns: 1fr; gap: 16px; }
+  .proj-tags { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+  .footer { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<!-- Nav -->
+<nav>
+  <a href="#" class="nav-logo">Angeline</a>
+  <div class="nav-right">
+    <a href="#projects">Work</a>
+    <a href="#about">About</a>
+    <a href="#contact" class="nav-bracket">[ Contact ]</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-nav-links">
+    <a href="#projects" class="hero-main-link">WORK</a>
+
+    <div class="hero-divider-row">
+      <div class="marquee-track" id="marquee">
+        <span class="marquee-item"><span>✦</span> Creative Marketing</span>
+        <span class="marquee-item"><span>✦</span> Event Strategy</span>
+        <span class="marquee-item"><span>✦</span> Stage Management</span>
+        <span class="marquee-item"><span>✦</span> Community Building</span>
+        <span class="marquee-item"><span>✦</span> Brand Storytelling</span>
+        <span class="marquee-item"><span>✦</span> Live Production</span>
+        <span class="marquee-item"><span>✦</span> Creative Marketing</span>
+        <span class="marquee-item"><span>✦</span> Event Strategy</span>
+        <span class="marquee-item"><span>✦</span> Stage Management</span>
+        <span class="marquee-item"><span>✦</span> Community Building</span>
+        <span class="marquee-item"><span>✦</span> Brand Storytelling</span>
+        <span class="marquee-item"><span>✦</span> Live Production</span>
+      </div>
+    </div>
+
+    <div class="hero-sub-links">
+      <a href="#about" class="hero-sub-link">ABOUT</a>
+      <a href="#contact" class="hero-sub-link">CONTACT</a>
+    </div>
+  </div>
+
+  <div class="hero-socials">
+    <a href="#">LinkedIn</a>
+    <a href="#">Instagram</a>
+  </div>
+</div>
+
+<!-- About -->
+<section id="about">
+  <div class="section-label"><span>//</span> Intro</div>
+  <h2 class="about-text reveal">
+    I turn ideas into <span class="accent">momentum.</span> From strategy to stage — I make sure every detail lands.
+  </h2>
+  <p class="about-sub reveal reveal-d1">
+    Marketing strategist with a hands-on edge. I thrive where creative direction meets real execution — building campaigns, running live events, and developing communities that actually mean something.
+  </p>
+</section>
+
+<!-- Projects -->
+<section id="projects" style="max-width:1200px;margin:0 auto;">
+  <div class="section-label"><span>//</span> Projects</div>
+  <div class="projects-list">
+
+    <div class="project-row reveal">
+      <div class="proj-num">01</div>
+      <div class="proj-body">
+        <div class="proj-cat">Event Marketing · Live Production</div>
+        <h2 class="proj-title">Twelevate Musical</h2>
+        <p class="proj-desc">Led full marketing strategy for a musical production while doubling as Stage Manager on event day. End-to-end campaign execution — from pre-show buzz to live coordination — tight, on-brand, no margin for error.</p>
+      </div>
+      <div class="proj-tags">
+        <span class="proj-tag">Marketing Strategy</span>
+        <span class="proj-tag">Stage Management</span>
+        <span class="proj-tag">Live Production</span>
+      </div>
+    </div>
+
+    <div class="project-row reveal reveal-d1">
+      <div class="proj-num">02</div>
+      <div class="proj-body">
+        <div class="proj-cat">Head of Event Marketing · Campus</div>
+        <h2 class="proj-title">Setengah Porsi</h2>
+        <p class="proj-desc">Headed event marketing for a campus food bazaar with an SDG framework. Full marketing direction — positioning, visuals, audience engagement — for an event that blended social impact with real market atmosphere.</p>
+      </div>
+      <div class="proj-tags">
+        <span class="proj-tag">Head of Marketing</span>
+        <span class="proj-tag">Event Strategy</span>
+        <span class="proj-tag">SDG Campaign</span>
+      </div>
+    </div>
+
+    <div class="project-row reveal reveal-d2">
+      <div class="proj-num">03</div>
+      <div class="proj-body">
+        <div class="proj-cat">Community · Creator Economy</div>
+        <h2 class="proj-title">Creators Club × Chandraliow</h2>
+        <p class="proj-desc">3 events. Multiple hats. MC, Project Developer, brainstorming lead — in collaboration with Chandraliow. Handled direct participant communication and kept the community warm, informed, and engaged throughout.</p>
+      </div>
+      <div class="proj-tags">
+        <span class="proj-tag">MC</span>
+        <span class="proj-tag">Project Dev</span>
+        <span class="proj-tag">Community</span>
+        <span class="proj-tag">Creator Economy</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Skills -->
+<section>
+  <div class="section-label"><span>//</span> What I Do</div>
+  <div class="skills-grid reveal">
+    <div class="skill-cell">
+      <div class="skill-cell-num">01</div>
+      <div class="skill-cell-name">Marketing Strategy</div>
+      <div class="skill-cell-desc">Campaign planning, brand positioning, audience targeting from zero to launch.</div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-num">02</div>
+      <div class="skill-cell-name">Event Management</div>
+      <div class="skill-cell-desc">Full-cycle event execution. Pre-event strategy through day-of operations.</div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-num">03</div>
+      <div class="skill-cell-name">Community Building</div>
+      <div class="skill-cell-desc">Keeping people engaged, informed, and connected — before, during, and after.</div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-num">04</div>
+      <div class="skill-cell-name">MC / Public Speaking</div>
+      <div class="skill-cell-desc">Comfortable on stage. Warm energy that keeps rooms alive.</div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-num">05</div>
+      <div class="skill-cell-name">Project Development</div>
+      <div class="skill-cell-desc">Brainstorming to brief to execution — wearing multiple hats without dropping any.</div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-num">06</div>
+      <div class="skill-cell-name">Brand Storytelling</div>
+      <div class="skill-cell-desc">Finding the narrative that makes people stop scrolling and actually care.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="contact-wrap">
+    <div class="contact-bg-text">ANGELINE</div>
+    <div class="contact-inner">
+      <div class="section-label" style="justify-content:center"><span>//</span> Contact</div>
+      <h2 class="contact-title reveal">Let's make<br>something <span class="accent">real.</span></h2>
+      <a href="mailto:hello@angeline.com" class="contact-email reveal reveal-d1">hello@angeline.com</a>
+      <div class="contact-links reveal reveal-d2">
+        <a href="#">LinkedIn</a>
+        <a href="#">Instagram</a>
+        <a href="#">WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <span>© 2026 Angeline</span>
+  <span>Creative Marketing</span>
+</footer>
+
+<script>
+// Cursor
+const cur = document.getElementById('cur');
+const ring = document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx+'px'; cur.style.top = my+'px';
+});
+function animRing(){
+  rx += (mx-rx)*0.1; ry += (my-ry)*0.1;
+  ring.style.left = rx+'px'; ring.style.top = ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+// Reveal on scroll
+const els = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }});
+}, {threshold: 0.12});
+els.forEach(e => obs.observe(e));
+</script>
+</body>
+</html>
